@@ -168,6 +168,8 @@ class TestOcrEndpoint:
         assert data["success"] is True
         assert data["text"] == "Hello, world!"
         assert data["metadata"]["primary_language"] == "en"
+        assert isinstance(data["image_base64"], str)
+        assert len(data["image_base64"]) > 0
         mock_inf.assert_called_once()
 
     @patch.object(app_module, "run_inference", new_callable=AsyncMock, return_value=MOCK_RAW_OUTPUT)
@@ -194,6 +196,7 @@ class TestOcrEndpoint:
         assert resp.status_code == 200
         data = resp.json()
         assert data["success"] is True
+        assert "image_base64" in data
         mock_render.assert_called_once()
 
     @patch.object(app_module, "run_inference", new_callable=AsyncMock, side_effect=RuntimeError("boom"))
@@ -217,6 +220,7 @@ class TestOcrPdfEndpoint:
         assert data["total_pages"] == 1
         assert data["results"][0]["success"] is True
         assert data["results"][0]["text"] == "Hello, world!"
+        assert data["results"][0]["image_base64"] == "AAAA"
 
     @patch.object(app_module, "run_inference", new_callable=AsyncMock, return_value=MOCK_RAW_OUTPUT)
     @patch.object(app_module, "render_pdf_page_to_base64", return_value="AAAA")

@@ -225,6 +225,7 @@ async def process_pages_parallel(pdf_bytes: bytes, page_nums: list[int]) -> list
                     "page": page_num,
                     "text": parsed["text"],
                     "metadata": parsed["metadata"],
+                    "image_base64": image_base64,
                     "success": True,
                 }
             except Exception as e:
@@ -232,6 +233,7 @@ async def process_pages_parallel(pdf_bytes: bytes, page_nums: list[int]) -> list
                 return {
                     "page": page_num,
                     "text": "",
+                    "image_base64": image_base64,
                     "success": False,
                     "error": str(e),
                 }
@@ -326,6 +328,7 @@ async def perform_ocr(file: UploadFile = File(...)):
         return {
             "text": parsed["text"],
             "metadata": parsed["metadata"],
+            "image_base64": image_base64,
             "success": True,
             "message": "OCR completed successfully",
         }
@@ -405,6 +408,7 @@ async def batch_ocr(files: list[UploadFile] = File(...)):
                     "filename": filename,
                     "text": parsed["text"],
                     "metadata": parsed["metadata"],
+                    "image_base64": image_base64,
                     "success": True,
                 }
             except Exception as e:
